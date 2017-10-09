@@ -2,10 +2,18 @@
 
 // Load up the application styles
 require("../styles/application.scss");
-
+require("../styles/home.scss");
 // Render the top-level React component
 import React from 'react';
 import ReactDOM from 'react-dom';
+//this file mounts our App component onto a DOM element, in this case, react-root.
+
+//this is where you declare what to RENDER down there
 import App from './App.jsx';
 
-ReactDOM.render(<App />, document.getElementById('react-root'));
+
+const node = document.getElementById("react-root");
+
+
+//the <App /> here needs to match what you declare in the above IMPORT
+ReactDOM.render(<App />, node);

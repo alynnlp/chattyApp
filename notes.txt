@@ -1,0 +1,43 @@
+//App in this case will store all the application data in 'this.state'
+// Chatty React App: http://localhost:3000
+// Chatty WebSockets Server: http://localhost:3001
+//need to connect the two, and websockets server needs EXPRESS as a HTTP server
+
+
+componentDidMount() {
+  console.log("componentDidMount <App />");
+  this.socket = new WebSocket("ws://localhost:3001");
+  console.log('Connected to the server!');
+  // setTimeout(() => {
+  //   console.log("Simulating incoming message");
+  //   // Add a new message to the list of messages in the data store
+  //   const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
+  //   const messages = this.state.messages.concat(newMessage)
+  //   // Update the state of the app component.
+  //   // Calling setState will trigger a call to render() in App and all child components.
+  //   //this.setState is called with a new array that contains the new message
+  //   this.setState({messages: messages}) //setstate means state is changing
+  // }, 3000);
+}
+
+@ component did mount
+  this.socket.onmessage = this.addRecievedMessage;
+
+//when received data from server, update the STATE with new mesasages
+addRecievedMessage = (receivedMessage) => {
+  //the recived messages is a string which needed to turn into OBJECT
+  var newMessage = JSON.parse(receivedMessage.data)
+  // Concat the message to the messages in the state
+  switch(newMessage.type) {
+    case "userMessage":
+
+    case "systemMessage":
+      const messages = this.state.messages.concat(newMessage)
+      this.setState({messages: messages})
+      break;
+
+    case "onlineUserCount":
+      this.setState({onlineUserCounter: newMessage.count})
+      break;
+  }
+}
