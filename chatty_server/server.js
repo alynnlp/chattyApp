@@ -67,7 +67,7 @@ function broadcastNumUsers(id, connected){
 //messages from USERS --> handling these message to the server
   //1. assign ID receivedMessage of the connected user and a 2. COLOR on the connections
 function broadcastBackMessages(id, message){
-
+console.log(id, message);
 //receivedMessage from SERVER END, server only read PARSED message
   let receivedMessage = JSON.parse(message);
 

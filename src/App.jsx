@@ -28,15 +28,29 @@ componentDidMount() {
 
 };
 
-// component update!
+
 componentDidUpdate() {
-  const elements = document.getElementsByClassName('message-content');
+  // const elements = document.getElementsByClassName('message-content');
+  //
+  // if (elements.length) {
+  //     const element  = elements[elements.length - 1]
+  //     element.scrollIntoView({block: "end"})
+  //   };
 
-  if (elements.length) {
-      const element  = elements[elements.length - 1]
-      element.scrollIntoView({block: "end"})
-    };
+};
 
+
+//App will update by calling the render() method below
+render() {
+  return (
+    <div>
+      <Navbar       onlineUserCounter = {this.state.onlineUserCounter}/>
+      <MessageList  messages        = {this.state.messages}           />
+      <ChatBar      currentUser     = {this.state.currentUser}
+                    changeNewUser   = {this.changeNewUser}
+                    sendNewMessage  = {this.sendNewMessage}           />
+    </div>
+  );
 };
 
 // send notification to server once name is changed
@@ -46,30 +60,32 @@ changeNewUser = (event) => {
   // Create a new message object to send to the server
   const newSystemMessage = {
     type    : 'systemMessage',
-    content : `${this.state.currentUser.name} changed their name to ${event.target.username.value}`
+    content : `${this.state.currentUser.name} changed their name to ${event.target.username}`
   }
   // change the current state to Anonymous or new username-->setState
-  if (!event.target.username.value) {
+  if (!event.target.value) {
     this.setState({currentUser: {name: "Anonymous"}})
   }
   else {
-    this.setState({currentUser: {name: event.target.username.value}})
+    this.setState({currentUser: {name: event.target.value}})
   }
   this.socket.send(JSON.stringify(newSystemMessage))
 }
 
 //receiving the text in the input field and passing it up to App
 sendNewMessage = (event) => {
-  console.log(event.charCode)
+  //console.log(event.charCode)
   if(event.charCode === 13) { //code 13 is the key"enter"
-  console.log('sendNewMessage>>>>>>', event.target.value)
+  //console.log('sendNewMessage>>>>>>', event.target.value)
   //this will trigger React to call our components render() method
   event.preventDefault()
   const newMessage = {
     id: 'userMessage',
-    username: this.state.currentUser.name,
+    type: 'userMessage',
+    currentUser: this.state.currentUser.name,
     content: event.target.value
   }
+  console.log(this.state.currentUser.name)
   event.target.value = ""
   //send to the server to be broadcast!! but server use OBJECT only JSON.parse()
   this.socket.send(JSON.stringify(newMessage));
@@ -81,10 +97,16 @@ sendNewMessage = (event) => {
   addRecievedMessage = (receivedMessage) => {
     //the recived messages is a string which needed to turn into OBJECT
     var newMessage = JSON.parse(receivedMessage.data)
+    //console.log(newMessage.type)
+    console.log(newMessage.currentUser)
+
     // Concat the message to the messages in the state
     switch(newMessage.type) {
-      case 'userMessage':
-
+      case 'userMessage': {
+        const messages = this.state.messages.concat(newMessage)
+        this.setState({messages: messages})
+        break;
+      }
       case 'systemMessage':
         const messages = this.state.messages.concat(newMessage)
         this.setState({messages: messages})
@@ -94,21 +116,11 @@ sendNewMessage = (event) => {
         this.setState({onlineUserCounter: newMessage.count})
         break;
     }
+
+
   }
 
-  //App will update by calling the render() method below
-  render() {
-    return (
-      <div>
-        <Navbar       onlineUserCounter = {this.state.onlineUserCounter}/>
-        <MessageList  messages        = {this.state.messages}           />
-        <ChatBar      currentUser     = {this.state.currentUser}
-                      changeNewUser   = {this.changeNewUser}
-                      sendNewMessage  = {this.sendNewMessage}           />
-      </div>
 
-    );
-  };
 
 }
 export default App;
