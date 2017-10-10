@@ -64,10 +64,10 @@ changeNewUser = (event) => {
   }
 
   // change the current state to Anonymous or new username-->setState
+
   if (!event.target.value) {
     this.setState({currentUser: {name: "Anonymous"}})
-  }
-  else {
+  } else {
     this.setState({currentUser: {name: event.target.value}})
   }
 
