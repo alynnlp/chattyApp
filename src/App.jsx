@@ -62,6 +62,7 @@ changeNewUser = (event) => {
     type    : 'systemMessage',
     content : `${this.state.currentUser.name} changed their name to ${event.target.username}`
   }
+
   // change the current state to Anonymous or new username-->setState
   if (!event.target.value) {
     this.setState({currentUser: {name: "Anonymous"}})
@@ -69,7 +70,15 @@ changeNewUser = (event) => {
   else {
     this.setState({currentUser: {name: event.target.value}})
   }
-  this.socket.send(JSON.stringify(newSystemMessage))
+
+  if(event.charCode === 13){
+
+    displayName =(event) => {
+      event.preventDefault()
+      this.socket.send(JSON.stringify(newSystemMessage))
+
+    }
+  }
 }
 
 //receiving the text in the input field and passing it up to App
