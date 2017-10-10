@@ -72,12 +72,7 @@ changeNewUser = (event) => {
   }
 
   if(event.charCode === 13){
-
-    displayName =(event) => {
-      event.preventDefault()
-      this.socket.send(JSON.stringify(newSystemMessage))
-
-    }
+    this.socket.send(JSON.stringify(newSystemMessage))
   }
 }
 
